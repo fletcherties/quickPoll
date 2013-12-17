@@ -1,0 +1,18 @@
+/* CSS declarations go here */
+#login-buttons {
+  padding-top:15px;
+  margin-right: 15px;
+  line-height: 20px;
+}
+#login-buttons .accounts-dialog { width: 250px; }
+
+.reset, .trash, .vote { cursor:pointer; }
+.vote-total {text-align: center;}
+
+.modal .modal-body {
+  max-height: 420px;
+  overflow-y: auto;
+}
+.badge {padding: 5px 12px;}
+.badge-y { background: #5CB85C; }
+.badge-n { background: #D9534F; }

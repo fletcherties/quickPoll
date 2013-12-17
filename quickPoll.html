@@ -1,0 +1,130 @@
+<head>
+  <title>quickPoll</title>
+</head>
+
+<body>
+  {{> page }}
+</body>
+
+<template name="page">
+  {{> viewVotesDialog}}
+  <div class="container">
+    <div class="navbar navbar-default" style="margin-top:.5em;">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="javascript:;">quickPoll</a>
+      </div> <!-- /.navbar-header -->
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav navbar-right">
+          <li>{{loginButtons align='right'}}</li>
+        </ul>
+      </div>
+    </div> <!-- /.navbar -->
+    {{#if currentUser }}
+      {{> home}}
+    {{else}}
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            <h3 class="panel-title">Please sign in...</h3>
+          </div>
+          <div class="panel-body">
+            <p>You will need to create an account and sign before you can view questions and cast your vote.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{/if}}
+  </div>
+</template>
+
+<template name="home">
+  <div class="row">
+    <div class="col-md-9 col-sm-8 col-xs-12">
+      <input id="txtQuestion" type="text" class="form-control input-lg" placeholder="What's your question?"/>
+    </div>
+    <div class="col-md-3 col-sm-4 col-xs-12">
+      <button id="btnCreate" class="btn btn-block btn-lg btn-primary"><i class="glyphicon glyphicon-flash"></i> Create Question</button>
+    </div>
+  </div> <!-- /.row -->
+  <hr>
+  {{#each questions}}
+  {{> question}}
+  {{/each}}
+</template>
+
+<template name="question">
+  <div class="well well-sm">
+    <div class="row">
+      <div class="col-md-1 col-sm-4 col-xs-6">
+        <span class="label label-default" style="font-weight:normal;">Q#{{_id}}</span>
+      </div> <!-- /.col -->
+      <div class="col-md-11 col-sm-8 col-xs-6 text-right">
+        <div class="btn-toolbar">
+          <button data-id="{{_id}}" data-toggle="modal" class="view-votes btn btn-xs btn-info" title="view votes">
+            <i class='glyphicon glyphicon-user'></i> <span class="hidden-xs">view votes</span>
+          </button>
+          <button data-id="{{_id}}" class="reset-votes btn btn-xs btn-warning" title="reset votes">
+            <i class='glyphicon glyphicon-refresh'></i> <span class="hidden-xs">reset votes</span>
+          </button>
+          <button data-id="{{_id}}" class="trash btn btn-xs btn-warning" title="delete question">
+            <i class='glyphicon glyphicon-trash'></i> <span class="hidden-xs">delete question</span>
+          </button>
+        </div> <!-- /.btn-toolbar -->
+      </div> <!-- /.col -->
+    </div> <!-- /.row -->
+    <h3 style="margin-top:10px; margin-bottom: 1em;">{{text}}<br>
+      <small><i class="glyphicon glyphicon-time"></i> created by {{createdBy}} about {{createdAt}}</small></h3>
+    <div class="row">
+      <div class="col-md-2 col-sm-2 col-xs-3">
+        <button class="vote btn btn-block btn-success" {{#if hasVoted}}disabled{{/if}} value="y" rel="{{_id}}" title="vote yes"><i class="glyphicon glyphicon-thumbs-up"></i></button>
+      </div> <!-- /.col -->
+      <div class="col-md-1 col-sm-2 col-xs-3">
+        <input class="vote-total form-control" value="{{responseY}}" disabled/>
+      </div> <!-- /.col -->
+      <div class="col-md-6 col-sm-4 hidden-xs">
+        <div class="progress" style="height: 34px;">
+          <div class="progress-bar progress-bar-success" style="width: {{percentY}}">
+            <span class="sr-only">{{percentY}} say YES</span>
+          </div>
+          <div class="progress-bar progress-bar-danger" style="width: {{percentN}}">
+            <span class="sr-only">{{percentN}} say NO</span>
+          </div>
+        </div> <!-- /.progress -->
+      </div> <!-- /.col -->
+      <div class="col-md-1 col-sm-2 col-xs-3">
+        <input class="vote-total form-control" value="{{responseN}}" disabled/>
+      </div> <!-- /.col -->
+      <div class="col-md-2 col-sm-2 col-xs-3">
+        <button class="vote btn btn-block btn-danger" {{#if hasVoted}}disabled{{/if}} value="n" rel="{{_id}}" title="vote no"><i class="glyphicon glyphicon-thumbs-down"></i></button>
+      </div> <!-- /.col -->
+    </div> <!-- /.row -->
+  </div> <!-- /.well -->
+</template>
+
+<template name="viewVotesDialog">
+  <div id="viewVotes" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close cancel">&times</button>
+          <h3 class="modal-title">Q: {{question.text}}</h3>
+        </div>
+        <div class="modal-body">
+          <ul class="list-group">
+          {{#each question.responses}}
+          <li class="list-group-item">{{> responder }}</li>
+          {{/each}}
+          </ul>
+        </div> <!-- /.modal-body -->
+        <div class="modal-footer">
+          <a href="javascript:;" class="btn btn-cancel cancel">Close</a>
+          </div> <!-- /.modal-footer -->
+      </div> <!-- /.modal-content -->
+    </div> <!-- /.modal-dialog -->
+  </div> <!-- /.modal -->
+</template>
+
+<template name="responder">
+  <span class="badge badge-{{response}}">{{response}}</span> {{responderName}}
+</template>
